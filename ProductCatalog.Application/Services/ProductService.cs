@@ -16,26 +16,17 @@ namespace ProductCatalog.Application.Services
     {
         private readonly IProductRepository _productRepository;
         private readonly ICategoryRepository _categoryRepository;
-        
+
         public ProductService(IProductRepository productRepository, ICategoryRepository categoryRepository)
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
-            
+
         }
 
-        public async Task ImportProductsAsync(IFormFile file)
+        public async Task<List<string>> ImportProductsAsync(IFormFile file)
         {
-            var existingIds = new HashSet<Guid>();
-            var products = ParseFile(file);
-            var dataTable = DataTableHelper.ToDataTable(products);
-
-            await _productRepository.ImportProductsAsync(dataTable);
-        }
-
-        private List<Product> ParseFile(IFormFile file)
-        {
-            var products = new List<Product>();
+            var errors = new List<string>();
 
             using (var stream = file.OpenReadStream())
             using (var reader = new StreamReader(stream))
@@ -45,10 +36,59 @@ namespace ProductCatalog.Application.Services
             }))
             {
                 csv.Context.RegisterClassMap<ProductMap>();
-                products.AddRange(csv.GetRecords<Product>());
+
+                var validationErrors = ProcessAndValidateRecords(csv);
+
+                if (validationErrors.errors.Any())
+                {
+                    return validationErrors.errors;
+                }
+
+                var dataTable = DataTableHelper.ToDataTable(validationErrors.validProducts);
+                await _productRepository.ImportProductsAsync(dataTable);
             }
 
-            return products;
+            return errors;
+        }
+
+        private (List<Product> validProducts, List<string> errors) ProcessAndValidateRecords(CsvReader csv)
+        {
+            var validProducts = new List<Product>();
+            var errors = new List<string>();
+
+            foreach (var product in csv.GetRecords<Product>())
+            {
+                var validationErrors = ValidateProduct(product);
+                if (!validationErrors.Any())
+                {
+                    validProducts.Add(product);
+                }
+                else
+                {
+                    errors.Add($"Product '{product.Name ?? "Unnamed"}': {string.Join(", ", validationErrors)}");
+                }
+            }
+
+            return (validProducts, errors);
+        }
+
+        private List<string> ValidateProduct(Product product)
+        {
+            var errors = new List<string>();
+
+            if (string.IsNullOrWhiteSpace(product.Name))
+                errors.Add("Product name is required.");
+
+            if (product.Price < 0)
+                errors.Add("Price must be non-negative.");
+
+            if (product.InventoryLevel < 0)
+                errors.Add("Inventory level must be non-negative.");
+
+            if (product.CategoryId == Guid.Empty)
+                errors.Add("CategoryId is invalid.");
+
+            return errors;
         }
 
         public async Task<IEnumerable<ProductDto>> GetProductsAsync(ProductFilterDto filter)
