@@ -1,0 +1,53 @@
+﻿using Microsoft.EntityFrameworkCore;
+using ProductCatalog.Application.Interfaces.Repositories;
+using ProductCatalog.Domain.Entities;
+using ProductCatalog.Infrastructure.Data;
+
+namespace ProductCatalog.Infrastructure.Repositories
+{
+    public class CategoryHierarchyRepository : GenericRepository<CategoryHierarchy>, ICategoryHierarchyRepository
+    {
+        public CategoryHierarchyRepository(ProductCatalogContext context) : base(context) { }
+
+        public async Task AddHierarchyAsync(Guid parentId, Guid childId)
+        {
+            var hierarchy = new CategoryHierarchy
+            {
+                ParentId = parentId,
+                ChildId = childId
+            };
+            _context.CategoryHierarchies.Add(hierarchy);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteHierarchyAsync(Guid parentId, Guid childId)
+        {
+            var hierarchy = await _context.CategoryHierarchies
+                .FirstOrDefaultAsync(h => h.ParentId == parentId && h.ChildId == childId);
+
+            if (hierarchy != null)
+            {
+                _context.CategoryHierarchies.Remove(hierarchy);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<IEnumerable<CategoryHierarchy>> GetChildrenAsync(Guid parentId)
+        {
+            return await _context.CategoryHierarchies
+                .Where(h => h.ParentId == parentId)
+                .Include(h => h.Child)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<CategoryHierarchy>> GetParentsAsync(Guid childId)
+        {
+            return await _context.CategoryHierarchies
+                .Where(h => h.ChildId == childId)
+                .Include(h => h.Parent)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+    }
+}
