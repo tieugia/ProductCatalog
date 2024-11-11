@@ -51,8 +51,6 @@ namespace ProductCatalog.Infrastructure.Repositories
 
         public async Task ImportProductsAsync(DataTable dataTable)
         {
-            var existingIds = new HashSet<Guid>();
-
             using var connection = _context.Database.GetDbConnection();
 
             await connection.OpenAsync();
