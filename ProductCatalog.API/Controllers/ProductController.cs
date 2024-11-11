@@ -16,6 +16,16 @@ namespace ProductCatalog.API.Controllers
             _productService = productService;
         }
 
+        [HttpPost("import")]
+        public async Task<IActionResult> ImportProductData(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("File is empty");
+
+            await _productService.ImportProductsAsync(file);
+            return Ok();
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetProducts(
             [FromQuery] ProductFilterDto filter)
@@ -26,7 +36,7 @@ namespace ProductCatalog.API.Controllers
             var products = await _productService.GetProductsAsync(filter);
             return Ok(products);
         }
-
+        
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProduct([NotEmptyGuid] Guid id)
         {

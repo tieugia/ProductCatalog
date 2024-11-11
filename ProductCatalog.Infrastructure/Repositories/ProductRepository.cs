@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using ProductCatalog.Application.Interfaces.Repositories;
 using ProductCatalog.Domain.Entities;
 using ProductCatalog.Infrastructure.Data;
+using System.Data;
 
 namespace ProductCatalog.Infrastructure.Repositories
 {
@@ -45,6 +47,30 @@ namespace ProductCatalog.Infrastructure.Repositories
                 .Take(pageSize);
 
             return await query.ToListAsync();
+        }
+
+        public async Task ImportProductsAsync(DataTable dataTable)
+        {
+            var existingIds = new HashSet<Guid>();
+
+            using var connection = _context.Database.GetDbConnection();
+
+            await connection.OpenAsync();
+
+            using var bulkCopy = new SqlBulkCopy((SqlConnection)connection);
+
+            bulkCopy.DestinationTableName = "Products";
+            bulkCopy.BatchSize = 1000;
+
+            bulkCopy.ColumnMappings.Add(nameof(Product.Name), nameof(Product.Name));
+            bulkCopy.ColumnMappings.Add(nameof(Product.Description), nameof(Product.Description));
+            bulkCopy.ColumnMappings.Add(nameof(Product.Price), nameof(Product.Price));
+            bulkCopy.ColumnMappings.Add(nameof(Product.InventoryLevel), nameof(Product.InventoryLevel));
+            bulkCopy.ColumnMappings.Add(nameof(Product.CategoryId), nameof(Product.CategoryId));
+            bulkCopy.ColumnMappings.Add(nameof(Product.ImageUrl), nameof(Product.ImageUrl));
+            bulkCopy.ColumnMappings.Add(nameof(Product.CreatedAt), nameof(Product.CreatedAt));
+
+            await bulkCopy.WriteToServerAsync(dataTable);
         }
     }
 }

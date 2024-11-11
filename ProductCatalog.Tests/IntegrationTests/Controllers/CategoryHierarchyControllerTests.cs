@@ -81,7 +81,7 @@ namespace ProductCatalog.Tests.IntegrationTests.Controllers
             var createdHierarchy = await AddCategoryHierarchyAsync(parentCategory.Id, childCategory.Id);
 
             // Act: Xóa liên kết cha-con đã tạo
-            var response = await _client.DeleteAsync($"{BaseUrl.CategoryHierachyAPI}/{createdHierarchy.Id}");
+            var response = await _client.DeleteAsync($"{BaseUrl.CategoryHierachyAPI}/{createdHierarchy!.Id}");
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NoContent);

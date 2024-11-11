@@ -8,7 +8,7 @@ namespace ProductCatalog.Common.Attributes
         public const string DefaultErrorMessage = "The {0} field must not be empty";
         public NotEmptyGuidAttribute() : base(DefaultErrorMessage) { }
 
-        public override bool IsValid(object value)
+        public override bool IsValid(object? value)
         {
             //NotEmpty doesn't necessarily mean required
             if (value is null)

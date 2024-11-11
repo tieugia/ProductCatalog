@@ -4,7 +4,9 @@ using ProductCatalog.Application.DTOs;
 using ProductCatalog.Tests.IntegrationTests.Constants;
 using ProductCatalog.Tests.IntegrationTests.Helpers;
 using ProductCatalog.Tests.IntegrationTests.Infrastructure;
+using System.Diagnostics;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Transactions;
 
@@ -31,6 +33,38 @@ namespace ProductCatalog.Tests.IntegrationTests.Controllers
             _transaction.Dispose();
             _factory.Dispose();
             _client.Dispose();
+        }
+
+        [TestMethod]
+        public async Task ImportProductData_ShouldImport100000Records()
+        {
+            // Arrange
+            var filePath = "../../../Products_100000.csv";
+            if (!File.Exists(filePath))
+            {
+                Assert.Fail("Test CSV file not found.");
+            }
+
+            using var formContent = new MultipartFormDataContent();
+            using var fileStream = File.OpenRead(filePath);
+            var fileContent = new StreamContent(fileStream);
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue("text/csv");
+
+            formContent.Add(fileContent, "file", Path.GetFileName(filePath));
+
+            var stopwatch = Stopwatch.StartNew();
+
+            // Act
+            var response = await _client.PostAsync($"{BaseUrl.ProductAPI}/import", formContent);
+
+            stopwatch.Stop();
+            var elapsedTime = stopwatch.Elapsed;
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            // Log the elapsed time
+            Console.WriteLine($"Import operation completed in: {elapsedTime.TotalSeconds} seconds");
         }
 
         [TestMethod]

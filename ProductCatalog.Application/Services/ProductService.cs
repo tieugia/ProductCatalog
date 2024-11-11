@@ -1,7 +1,14 @@
-﻿using ProductCatalog.Application.DTOs;
+﻿using CsvHelper;
+using CsvHelper.Configuration;
+using Microsoft.AspNetCore.Http;
+using ProductCatalog.Application.DTOs;
 using ProductCatalog.Application.Interfaces.Repositories;
 using ProductCatalog.Application.Interfaces.Services;
+using ProductCatalog.Common.Helpers;
+using ProductCatalog.Common.Mappings;
 using ProductCatalog.Domain.Entities;
+using System.Data;
+using System.Globalization;
 
 namespace ProductCatalog.Application.Services
 {
@@ -9,11 +16,39 @@ namespace ProductCatalog.Application.Services
     {
         private readonly IProductRepository _productRepository;
         private readonly ICategoryRepository _categoryRepository;
-
+        
         public ProductService(IProductRepository productRepository, ICategoryRepository categoryRepository)
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
+            
+        }
+
+        public async Task ImportProductsAsync(IFormFile file)
+        {
+            var existingIds = new HashSet<Guid>();
+            var products = ParseFile(file);
+            var dataTable = DataTableHelper.ToDataTable(products);
+
+            await _productRepository.ImportProductsAsync(dataTable);
+        }
+
+        private List<Product> ParseFile(IFormFile file)
+        {
+            var products = new List<Product>();
+
+            using (var stream = file.OpenReadStream())
+            using (var reader = new StreamReader(stream))
+            using (var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                HasHeaderRecord = true
+            }))
+            {
+                csv.Context.RegisterClassMap<ProductMap>();
+                products.AddRange(csv.GetRecords<Product>());
+            }
+
+            return products;
         }
 
         public async Task<IEnumerable<ProductDto>> GetProductsAsync(ProductFilterDto filter)
@@ -60,7 +95,7 @@ namespace ProductCatalog.Application.Services
             var category = await _categoryRepository.GetByIdAsync(productDto.CategoryId);
             if (category == null)
             {
-                return null; 
+                return null;
             }
 
             var product = new Product

@@ -5,15 +5,17 @@ VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductCatalog.API", "ProductCatalog.API\ProductCatalog.API.csproj", "{1406E26C-BF59-4519-99D3-2D457187B803}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductCatalog.Application", "ProductCatalog.Application\ProductCatalog.Application.csproj", "{D0C0EF0C-307C-4A8B-9CD3-5E50630EE4F7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductCatalog.Application", "ProductCatalog.Application\ProductCatalog.Application.csproj", "{D0C0EF0C-307C-4A8B-9CD3-5E50630EE4F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductCatalog.Domain", "ProductCatalog.Domain\ProductCatalog.Domain.csproj", "{565DF246-39C5-4726-9825-567F29B8EB6D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductCatalog.Domain", "ProductCatalog.Domain\ProductCatalog.Domain.csproj", "{565DF246-39C5-4726-9825-567F29B8EB6D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductCatalog.Infrastructure", "ProductCatalog.Infrastructure\ProductCatalog.Infrastructure.csproj", "{2EB30A9A-45F8-4A98-9CF4-61A32E19A4BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductCatalog.Infrastructure", "ProductCatalog.Infrastructure\ProductCatalog.Infrastructure.csproj", "{2EB30A9A-45F8-4A98-9CF4-61A32E19A4BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductCatalog.Common", "ProductCatalog.Common\ProductCatalog.Common.csproj", "{4567A325-64B2-4DBF-949D-FFA06C3A12ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductCatalog.Common", "ProductCatalog.Common\ProductCatalog.Common.csproj", "{4567A325-64B2-4DBF-949D-FFA06C3A12ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductCatalog.Tests", "ProductCatalog.Tests\ProductCatalog.Tests.csproj", "{3AC11271-F6B6-411C-A003-DE9E032157A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductCatalog.Tests", "ProductCatalog.Tests\ProductCatalog.Tests.csproj", "{3AC11271-F6B6-411C-A003-DE9E032157A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvGenerator", "CsvGenerator\CsvGenerator.csproj", "{601E314A-048F-4786-85BF-374A35B89898}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{3AC11271-F6B6-411C-A003-DE9E032157A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3AC11271-F6B6-411C-A003-DE9E032157A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3AC11271-F6B6-411C-A003-DE9E032157A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{601E314A-048F-4786-85BF-374A35B89898}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{601E314A-048F-4786-85BF-374A35B89898}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{601E314A-048F-4786-85BF-374A35B89898}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{601E314A-048F-4786-85BF-374A35B89898}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
