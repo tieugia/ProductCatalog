@@ -54,6 +54,7 @@ CREATE INDEX IX_CategoryHierarchy_ChildId ON CategoryHierarchy (ChildId);
 
 GO
 
+--TRIGGERS
 CREATE TRIGGER TR_CategoryHierarchy_Delete
 ON CategoryHierarchy
 AFTER DELETE
