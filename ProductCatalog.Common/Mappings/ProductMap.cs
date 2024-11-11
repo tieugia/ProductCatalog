@@ -7,6 +7,7 @@ namespace ProductCatalog.Common.Mappings
     {
         public ProductMap()
         {
+            Map(m => m.Id).Name(nameof(Product.Id));
             Map(m => m.Name).Name(nameof(Product.Name));
             Map(m => m.Description).Name(nameof(Product.Description));
             Map(m => m.Price).Name(nameof(Product.Price));
@@ -14,6 +15,7 @@ namespace ProductCatalog.Common.Mappings
             Map(m => m.CategoryId).Name(nameof(Product.CategoryId));
             Map(m => m.ImageUrl).Name(nameof(Product.ImageUrl));
             Map(m => m.CreatedAt).Name(nameof(Product.CreatedAt));
+            Map(m => m.UpdatedAt).Name(nameof(Product.UpdatedAt));
         }
     }
 }

@@ -24,7 +24,7 @@ namespace ProductCatalog.Application.Services
 
         }
 
-        public async Task<List<string>> ImportProductsAsync(IFormFile file)
+        public async Task<List<string>> ImportUpsertProductsAsync(IFormFile file)
         {
             var errors = new List<string>();
 
@@ -45,7 +45,7 @@ namespace ProductCatalog.Application.Services
                 }
 
                 var dataTable = DataTableHelper.ToDataTable(validationErrors.validProducts);
-                await _productRepository.ImportProductsAsync(dataTable);
+                await _productRepository.ImportUpsertProductsAsync(dataTable);
             }
 
             return errors;

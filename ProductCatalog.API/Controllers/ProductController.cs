@@ -22,7 +22,7 @@ namespace ProductCatalog.API.Controllers
             if (file == null || file.Length == 0)
                 return BadRequest("File is empty");
 
-            var errors = await _productService.ImportProductsAsync(file);
+            var errors = await _productService.ImportUpsertProductsAsync(file);
             if (errors.Any())
                 return BadRequest(errors);
 
